@@ -83,6 +83,8 @@ for review in x:
 print(dict_adjectives.most_common(10))
 print(dict_nouns.most_common(20))
 
+
+
 #get words distribution for feature vector creation
 all_words = []
 for sentence in x:
@@ -103,7 +105,7 @@ filtered_all_words = [w for w in all_words if not w in stop_words]
 filtered_all_words = FreqDist(filtered_all_words); print(filtered_all_words.most_common(15))
 
 #feature extraction
-word_features = list(filtered_all_words.keys())[:100] #most commonly used words
+word_features = numpy.array(filtered_all_words.most_common(100))[:,0] #most commonly used words
 
 #create feature_vectors for the each review
 def find_features(review):
@@ -114,7 +116,6 @@ def find_features(review):
     return features
 featureSet = [(find_features(x[0]), x[1]) for x in x_Set]
 
-hier noch einmal drüber schauen[
 
 #n-gram approach with logistic regression
 ngram_vectorizer = CountVectorizer(binary=True, ngram_range=(1, 2))
@@ -130,8 +131,6 @@ print(n_gram_vocab_new)
 X_train, X_val, y_train, y_val = train_test_split(
     train_set, target, train_size = 0.75
 )
-
-]bis hier hin
 
 #logistic regression
 for c in [0.01, 0.05, 0.25, 0.5, 1]:
