@@ -13,7 +13,17 @@ class Classifier(object):
 
     def fit(self, corpora, train_set, test_set, magnitude = 100):
         """
+        !!! Important !!! Higher accuracy values then documented result from random split method (documented accuracy was calculated with a static set)
+        
+        Classification step
 
+        Corpora has shape (M). It contains M feature vectors to classify in N-d feature space
+
+        Train_set has shape (N,2). It contains N-d feature vector and classified class
+
+        Test_set has shape (N,2). It constains N-d feature vector and classified class
+
+        Magnitude has the shape of int. It defines the n-most frequent ngrams (purly for individual interest)
         """
         corpora = np.array(corpora)
         split = np.size(train_set,0) / np.size(corpora,0)
@@ -34,7 +44,7 @@ class Classifier(object):
         #logistic regression
         final_accuracy = 0
         for c in [0.01, 0.05, 0.25, 0.5, 1]:
-            lr = LogisticRegression(C=c)
+            lr = LogisticRegression(C=c,solver='lbfgs')
             classifier = lr.fit(X_train, y_train)
 
             running_accuracy = accuracy_score(y_val, lr.predict(X_val))
@@ -43,16 +53,17 @@ class Classifier(object):
                 final_accuracy = running_accuracy
                 self.classifier = classifier
 
-        print("nGram Logistic Regression accuracy:",final_accuracy)
+        print("nGram Logistic Regression accuracy:",final_accuracy*100,"%")
+        return final_accuracy*100
 
     def predict(self, reviews):
         """
         Classification step
 
-        X has shape (M,2). It contains M feature vectors to classify in 2-d feature space
+        reviews has shape (M). It contains M feature vectors to classify in N-d feature space
 
         Returns:
-            A vector of shape (M,) with M classification results (class labels)
+            A vector of shape (M,2) with M classification results (class labels)
         """
         vectorized_reviews = self.vectorizer.transform(reviews)
         return self.classifier.predict(vectorized_reviews)

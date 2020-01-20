@@ -16,11 +16,6 @@ class CorporaAnalyzer(object):
         self.tokenized_corpora =   []
         self.all_words = []
 
-        print("tokenizer: ", tokenizer)
-        print("stemmer: ", stemmer)
-        print("lemmatizer: ", lemmatization_enabled)
-        print("stopwords: ", stopwords_removal)
-
         if tokenizer <= 2:
             if tokenizer == 0:
                 self.tokenizer = RegexpTokenizer(r'\w+')
