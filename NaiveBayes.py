@@ -43,18 +43,23 @@ class Classifier(object):
         train_set has shape (N,2). It contains N feature vectors and class-label
         test_set has shape (N,2). It contains N feature vectors and class-label
         """
+        accuracy = 0
         if distribution >= 0 and distribution <= 2:
             if distribution == 0:
                 self.classifier = classify.NaiveBayesClassifier.train(train_set)
-                print("GaussianNB accuracy:",(classify.accuracy(self.classifier, test_set))*100,"%")
+                accuracy = (classify.accuracy(self.classifier, test_set))*100
+                print("GaussianNB accuracy:",accuracy,"%")
             elif distribution == 1:
                 self.classifier = SklearnClassifier(MultinomialNB()).train(train_set)
-                print("MultinomialNB accuracy:",(classify.accuracy(self.classifier, test_set))*100,"%")
+                accuracy = (classify.accuracy(self.classifier, test_set))*100
+                print("MultinomialNB accuracy:",accuracy,"%")
             else:
                 self.classifier = SklearnClassifier(BernoulliNB()).train(train_set)
-                print("BernoulliNB accuracy:",(classify.accuracy(self.classifier, test_set))*100,"%")
+                accuracy = (classify.accuracy(self.classifier, test_set))*100
+                print("BernoulliNB accuracy:",accuracy,"%")
         else:
             raise ValueError('invalid distribution value')
+        return accuracy
         
     def predict(self, reviews):
         """

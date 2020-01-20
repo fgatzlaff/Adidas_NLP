@@ -10,43 +10,52 @@ class CorporaAnalyzer(object):
     def __init__(self, corpora, tokenizer=0, stemmer=0, lemmatization_enabled=True, stopwords_removal=True):
         """
         Initialize the class with with desired tokenizer, stemmer and lemmatizer
-        """
+        """    
         self.corpora = corpora
         self.cleaned_corpora_set = []
         self.tokenized_corpora =   []
         self.all_words = []
 
-        if tokenizer == 0:
-            self.tokenizer = RegexpTokenizer(r'\w+')
-        elif tokenizer == 1:
-            self.tokenizer = word_tokenize
+        print("tokenizer: ", tokenizer)
+        print("stemmer: ", stemmer)
+        print("lemmatizer: ", lemmatization_enabled)
+        print("stopwords: ", stopwords_removal)
+
+        if tokenizer <= 2:
+            if tokenizer == 0:
+                self.tokenizer = RegexpTokenizer(r'\w+')
+            elif tokenizer == 1:
+                self.tokenizer = TreebankWordTokenizer()
+            else:
+                self.tokenizer = TweetTokenizer()
         else:
-            self.tokenizer = TweetTokenizer
-        assert tokenizer <= 2
+            assert tokenizer <= 2,"you used the wrong tokenizer value"
 
-
-        if stemmer < 2:
+        if stemmer <= 3:
             if stemmer == 0:
                 self.stemmer = PorterStemmer()
             elif stemmer == 1:
-                self.stemmer = RegexpStemmer
+                self.stemmer = LancasterStemmer()
+            elif stemmer == 2:
+                self.stemmer = RegexpStemmer('ing$|s$|e$|able$', min=4)                       #manually modifiable stemmer
             else:
-                self.stemmer = SnowballStemmer("english")
-        assert stemmer <= 2
+                self.stemmer = Cistem(case_insensitive=False)                                 #favorite german stemmer
+        else:
+            assert stemmer <= 3,"you used the wrong stemmer value"
 
         if lemmatization_enabled:
             self.lemmatization_enabled = True
             self.stemmer = WordNetLemmatizer()
         else:
             self.lemmatization_enabled = False
-            print("no lemmatization was selected")  
+            #print("no lemmatization was selected")  
 
         if stopwords_removal:
             self.stopwords_removal = True
             self.stop_words = set(stopwords.words('english'))
         else:
             self.stopwords_removal = False
-            print("no stopword removal was selected")   
+            #print("no stopword removal was selected")   
 
     def tokenize_corpora(self, corpora):
         tokenized_corpora =   []
